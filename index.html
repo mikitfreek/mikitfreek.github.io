@@ -5,30 +5,49 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Comming Soon!</title>
 
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+
     <style>
-        body {
+        * {
+            color:#fbfbfbfb;
+            font-family: Georgia, serif;
+        }
+        .main-bg {
+            height:100vh;
+            width:auto;
             background: rgb(102,0,255);
             background: linear-gradient(164deg, rgba(102,0,255,1) 35%, rgba(218,0,255,1) 100%);
         }
-        h1{
+        .main{
             position: absolute;
-            top: calc(50% - 84px);
-            font-size: 72px;
             font-family: Georgia, serif;
-            color:#fbfbfbfb;
+            top: calc(50% - 84px);
             left: calc(50% - 300px);
         }
-        .btn-check{
+        h1{
             font-size: 72px;
-            font-family: Georgia, serif;
+        }
+        .btn-check{
+            font-size: 36px;
+            font-family: monospace;
+            font-weight: 100;
+            color:#fbfbfb;
             left: calc(50% - 300px);
             border: 1px solid #fff;
-            border-radius: 25%;
+            border-radius: 36px;
+            padding: 0 25px 0 25px;
+        }
+        .btn-check:hover{
+            color:#d1d;
+            border-color: #d1d;
         }
         </style>
 </head>
 <body>
-    <h1>COMMING SOON</h1>
-    <button type="button" class="btn-check">Check My Fiverr!</button>
+    <div class="main-bg"></div>
+    <div class="main">
+        <h1>COMMING SOON</h1>
+        <a href="https://www.fiverr.com/mikitfreek"><button type="button" class="btn btn-check">Check My Fiverr!</button></a>
+    </div>
 </body>
 </html>
