@@ -71,8 +71,6 @@
                 ret.push([xs[i]].concat(rest[j]))
             }
             }
-            //ret[i] = ret[i].replace(",", " ");
-            console.log(ret[2]);
         }
         return ret;
         }
@@ -90,7 +88,8 @@
             //text += " (" + (i+1) + ") " + arr[i] + "<br>";
         }
         let z = perm(arr);
-        document.getElementById("out").innerHTML = z.join("<br> ");
+        text = z.join("<br>");//.deepToString();
+        document.getElementById("out").innerHTML = text;//.replace(",", " ");
     }
 </script>
 </body>
