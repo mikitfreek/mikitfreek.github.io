@@ -13,8 +13,9 @@
             font-family: Georgia, serif;
         }
         .main-bg {
-            height:100vh;
-            width:auto;
+            position:fixed;
+            height:100%;
+            width:100vw;
             background: rgb(102,0,255);
             background: linear-gradient(164deg, rgba(102,0,255,1) 35%, rgba(218,0,255,1) 100%);
         }
@@ -22,10 +23,11 @@
             position: absolute;
             font-family: Georgia, serif;
             top: calc(50% - 84px);
-            left: calc(50% - 300px);
+            left: calc(50% - 18%);
+            width:36%;
         }
         h1{
-            font-size: 72px;
+            font-size: 48px;
         }
         .btn-check{
             font-size: 28px;
@@ -40,13 +42,53 @@
             color:#d1d;
             border-color: #d1d;
         }
+        textarea{
+            background-color: #22222260;
+            width:100%;
+        }
+        #out{background-color: #22222260;margin-top:30px;}
         </style>
 </head>
 <body>
     <div class="main-bg"></div>
     <div class="main">
-        <h1>COMMING SOON</h1>
-        <a href="https://www.fiverr.com/mikitfreek"><button type="button" class="btn btn-check">Check My Fiverr!</button></a>
+        <h1>I/O 2077</h1>
+        <textarea id="in"></textarea><br>
+        <button type="button" class="btn btn-check" onClick="cp()">Convert</button></a>
+        <div id="out"></div>
     </div>
+<script>
+    function perm(xs) {
+        let ret = [];
+
+        for (let i = 0; i < xs.length; i = i + 1) {
+            let rest = perm(xs.slice(0, i).concat(xs.slice(i + 1)));
+
+            if(!rest.length) {
+            ret.push([xs[i]])
+            } else {
+            for(let j = 0; j < rest.length; j = j + 1) {
+                ret.push([xs[i]].concat(rest[j]))
+            }
+            }
+        }
+        return ret;
+        }
+
+    function cp() {
+        let x = document.getElementById("in").value;
+        let a = (x.split(' ').length);
+        let arr = new Array(a);
+        let text = "";
+
+        for (let i=0; i<arr.length; i++);
+        for(let i=0; i<a; i++)
+        {
+            arr[i] = x.split(' ')[i];
+            //text += " (" + (i+1) + ") " + arr[i] + "<br>";
+        }
+        document.getElementById("out").innerHTML = perm(arr).join("\n");
+    }
+</script>
 </body>
 </html>
