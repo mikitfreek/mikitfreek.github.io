@@ -12,6 +12,15 @@
             color:#fbfbfbfb;
             font-family: Georgia, serif;
         }
+
+        /* single-row column design */
+        #out tr { display: block; float: left; }
+        #out th, td { display: block; border: 1px solid black; }
+
+        /* border-collapse */
+        #out tr>*:not(:first-child) { border-top: 0; }
+        #out tr:not(:first-child)>* { border-left:0; }
+
         .main-bg {
             position:fixed;
             height:100%;
@@ -78,21 +87,27 @@
         }
 
     function cp() {
-        let x = document.getElementById("in").value;
+        let x = "abecadlo z pieca spadlo";//document.getElementById("in").value;
         let a = (x.split(' ').length);
         let arr = new Array(a);
         let text = "";
 
-        for (let i = 0; i < arr.length; i++);
         for(let i = 0; i < a; i++)
         {
             arr[i] = x.split(' ')[i];
             //text += " (" + (i+1) + ") " + arr[i] + "<br>";
         }
         let z = perm(arr);
-        text = z.join("<br>");//.deepToString();
-        document.getElementById("out").innerHTML = text;//.replace(",", " ");
+
+        for(let i = 0; i < z.length; i++) {
+            for(let j = 0; j < z[j].length; j++) {
+                text += z[i][j] + " ";
+            }
+            text += "</br>";
+        }
+        document.getElementById("out").innerHTML = text;
     }
+    cp()//
 </script>
 </body>
 </html>
