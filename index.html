@@ -63,12 +63,13 @@
             color:#d1d;
             border-color: #d1d;
         }
-        textarea{
+        #in{
+            height:30px;
             background-color: #22222260;
             width:100%;
         }
         #out{background-color: #22222260;margin-top:30px;padding-left:3px}
-        #in{height:30px;}
+        #output{font-family: monospace;font-size:30px;margin-top:30px;}
         </style>
 </head>
 <body>
@@ -78,7 +79,8 @@
         <p>Separate 3+ specified elements with spacebars:<br>
         <i style="color:rgba(196, 196, 196, 0.747)">(7+ gets laggy bcs its exponential growth)</i></p>
         <textarea id="in"></textarea><br>
-        <button type="button" class="btn btn-check" onClick="cp()">Convert</button></a>
+        <button type="button" class="btn btn-check" onClick="main()">Solve</button></a>
+        <h3 id="output"></h3>
         <div id="out"></div>
     </div>
 <script>
@@ -99,7 +101,7 @@
         return ret;
         }
 
-    function cp() {
+    function main() {
         let x = document.getElementById("in").value;
         let a = (x.split(' ').length);
         let arr = new Array(a);
@@ -117,8 +119,9 @@
             }
             text += "</br>";
         }
+        let y = document.getElementById("output");
         let q = document.getElementById("out");
-        //q.setAttribute('padding-left', '10px');
+        y.innerHTML = "Permutations: " + z.length;
         q.innerHTML = text;
     }
 </script>
