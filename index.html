@@ -3,23 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Comming Soon!</title>
+    <title>@mikitfreek - permutation</title>
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
 
     <style>
         * {
+            box-sizing: border-box;
             color:#fbfbfbfb;
             font-family: Georgia, serif;
         }
-
-        /* single-row column design */
-        #out tr { display: block; float: left; }
-        #out th, td { display: block; border: 1px solid black; }
-
-        /* border-collapse */
-        #out tr>*:not(:first-child) { border-top: 0; }
-        #out tr:not(:first-child)>* { border-left:0; }
 
         .main-bg {
             position:fixed;
@@ -31,21 +24,39 @@
         .main{
             position: absolute;
             font-family: Georgia, serif;
-            top: calc(20%);
-            left: calc(50% - 18%);
-            width:36%;
+            top: 4%;
+            left: 50%;
+            margin-left:-45%;
+            width:90%;
         }
-        h1{
-            font-size: 48px;
+        @media only screen and (min-width: 800px){
+            .main{
+                top: 16%;
+                left: 50%;
+                margin-left:-30%;
+                width:60%;
+            }
+        }
+        @media only screen and (min-width: 1700px){
+            .main{
+                top: 20%;
+                left: 50%;
+                margin-left:-18%;
+                width:36%;
+            }
+        }
+        h4{
+            font-size: 32px;
+            margin-bottom:1em;
         }
         .btn-check{
-            font-size: 28px;
+            font-size: 22px;
             font-family: monospace;
             font-weight: 100;
             color:#fbfbfb;
             border: 1px solid #fff;
             border-radius: 36px;
-            padding: 0 30px;
+            padding: 0 24px;
             margin-top:20px;
         }
         .btn-check:hover{
@@ -56,14 +67,16 @@
             background-color: #22222260;
             width:100%;
         }
-        #out{background-color: #22222260;margin-top:30px;}
+        #out{background-color: #22222260;margin-top:30px;padding-left:3px}
+        #in{height:30px;}
         </style>
 </head>
 <body>
     <div class="main-bg"></div>
     <div class="main">
-        <h1>//PERMUTACJA 2077</h1>
-        <p>Oddziel spacją dowolną ilość słow do permutaji.</p>
+        <h4>PERMUTATION OF N ELEMENTS</h4>
+        <p>Separate 3+ specified elements with spacebars:<br>
+        <i style="color:rgba(196, 196, 196, 0.747)">(7+ gets laggy bcs its exponential growth)</i></p>
         <textarea id="in"></textarea><br>
         <button type="button" class="btn btn-check" onClick="cp()">Convert</button></a>
         <div id="out"></div>
@@ -104,7 +117,9 @@
             }
             text += "</br>";
         }
-        document.getElementById("out").innerHTML = text;
+        let q = document.getElementById("out");
+        //q.setAttribute('padding-left', '10px');
+        q.innerHTML = text;
     }
 </script>
 </body>
