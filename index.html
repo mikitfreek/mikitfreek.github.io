@@ -79,29 +79,29 @@
         <p>Separate 3+ specified elements with spacebars:<br>
         <i style="color:rgba(196, 196, 196, 0.747)">(7+ gets laggy due to its exponential growth)</i></p>
         <textarea id="in"></textarea><br>
-        <button type="button" class="btn btn-check" onClick="main()">Solve</button></a>
+        <button type="button" class="btn btn-check" onClick="solve()">Solve</button></a>
         <h3 id="output"></h3>
         <div id="out"></div>
     </div>
 <script>
-    function perm(xs) {
-        let ret = [];
+    function perm(arr) {
+        let x = [];
 
-        for (let i = 0; i < xs.length; i++) {
-            let rest = perm(xs.slice(0, i).concat(xs.slice(i + 1)));
+        for (let i = 0; i < arr.length; i++) {
+            let rest = perm(arr.slice(0, i).concat(arr.slice(i + 1)));
 
             if(!rest.length) {
-            ret.push([xs[i]])
+            x.push([arr[i]])
             } else {
             for(let j = 0; j < rest.length; j++) {
-                ret.push([xs[i]].concat(rest[j]))
+                x.push([arr[i]].concat(rest[j]))
             }
             }
         }
-        return ret;
+        return x;
         }
 
-    function main() {
+    function solve() {
         let x = document.getElementById("in").value;
         let a = (x.split(' ').length);
         let arr = new Array(a);
@@ -111,6 +111,7 @@
         {
             arr[i] = x.split(' ')[i];
         }
+        
         let z = perm(arr);
 
         for(let i = 0; i < z.length; i++) {
@@ -119,7 +120,7 @@
             }
             text += "</br>";
         }
-        
+
         let y = document.getElementById("output");
         let q = document.getElementById("out");
         y.innerHTML = "Permutations: " + z.length;
