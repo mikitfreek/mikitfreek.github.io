@@ -1,131 +1,149 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@mikitfreek - permutation</title>
 
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
 
     <style>
         * {
             box-sizing: border-box;
-            color:#fbfbfbfb;
+            color: #fbfbfbfb;
             font-family: Georgia, serif;
         }
 
         .main-bg {
-            position:fixed;
-            height:100%;
-            width:100vw;
-            background: rgb(102,0,255);
-            background: linear-gradient(164deg, rgba(102,0,255,1) 35%, rgba(218,0,255,1) 100%);
+            position: fixed;
+            height: 100%;
+            width: 100vw;
+            background: rgb(102, 0, 255);
+            background: linear-gradient(164deg, rgba(102, 0, 255, 1) 35%, rgba(218, 0, 255, 1) 100%);
         }
-        .main{
+
+        .main {
             position: absolute;
             font-family: Georgia, serif;
             top: 4%;
             left: 50%;
-            margin-left:-45%;
-            width:90%;
+            margin-left: -45%;
+            width: 90%;
         }
-        @media only screen and (min-width: 800px){
-            .main{
+
+        @media only screen and (min-width: 800px) {
+            .main {
                 top: 16%;
                 left: 50%;
-                margin-left:-30%;
-                width:60%;
+                margin-left: -30%;
+                width: 60%;
             }
         }
-        @media only screen and (min-width: 1700px){
-            .main{
+
+        @media only screen and (min-width: 1700px) {
+            .main {
                 top: 20%;
                 left: 50%;
-                margin-left:-18%;
-                width:36%;
+                margin-left: -18%;
+                width: 36%;
             }
         }
-        h4{
+
+        h4 {
             font-size: 32px;
-            margin-bottom:1em;
+            margin-bottom: 1em;
         }
-        .btn-check{
+
+        .btn-check {
             font-size: 22px;
             font-family: monospace;
             font-weight: 100;
-            color:#fbfbfb;
+            color: #fbfbfb;
             border: 1px solid #fff;
             border-radius: 36px;
             padding: 0 24px;
-            margin-top:30px;
+            margin-top: 30px;
         }
-        .btn-check:hover{
-            color:#d1d;
+
+        .btn-check:hover {
+            color: #d1d;
             border-color: #d1d;
         }
-        #in{
-            height:30px;
+
+        #in {
+            height: 30px;
             background-color: #22222260;
-            width:100%;
+            width: 100%;
         }
-        #out{background-color: #22222260;margin-top:30px;padding-left:3px}
-        #output{font-family: monospace;font-size:30px;margin-top:30px;}
-        </style>
+
+        #out {
+            background-color: #22222260;
+            margin-top: 30px;
+            padding-left: 3px
+        }
+
+        #output {
+            font-family: monospace;
+            font-size: 30px;
+            margin-top: 30px;
+        }
+    </style>
 </head>
+
 <body>
     <div class="main-bg"></div>
     <div class="main">
         <h4>PERMUTATION OF N ELEMENTS</h4>
         <p>Separate 3+ specified elements with spacebars:<br>
-        <i style="color:rgba(196, 196, 196, 0.747)">(7+ gets laggy due to its exponential growth)</i></p>
+            <i style="color:rgba(196, 196, 196, 0.747)">(7+ gets laggy due to its exponential growth)</i></p>
         <textarea id="in"></textarea><br>
         <button type="button" class="btn btn-check" onClick="solve()">Solve</button></a>
         <h3 id="output"></h3>
         <div id="out"></div>
     </div>
-<script>
-    function perm(arr) {
-        let x = [];
+    <script>
+        function perm(arr) {
+            let x = [];
 
-        for (let i = 0; i < arr.length; i++) {
-            let rest = perm(arr.slice(0, i).concat(arr.slice(i + 1)));
+            for (let i = 0; i < arr.length; i++) {
+                let rest = perm(arr.slice(0, i).concat(arr.slice(i + 1)));
 
-            if(!rest.length) {
-            x.push([arr[i]])
-            } else {
-            for(let j = 0; j < rest.length; j++) {
-                x.push([arr[i]].concat(rest[j]))
+                if (!rest.length) {
+                    x.push([arr[i]])
+                } else {
+                    for (let j = 0; j < rest.length; j++) {
+                        x.push([arr[i]].concat(rest[j]))
+                    }
+                }
             }
+            return x;
+        }
+
+        function solve() {
+            let x = document.getElementById("in").value;
+            let a = (x.split(' ').length);
+            let arr = new Array(a);
+            let text = "";
+
+            for (let i = 0; i < a; i++) arr[i] = x.split(' ')[i];
+
+            let z = perm(arr);
+
+            for (let i = 0; i < z.length; i++) {
+                for (let j = 0; j < z[j].length; j++) {
+                    text += z[i][j] + " ";
+                }
+                text += "</br>";
             }
-        }
-        return x;
-        }
 
-    function solve() {
-        let x = document.getElementById("in").value;
-        let a = (x.split(' ').length);
-        let arr = new Array(a);
-        let text = "";
-
-        for(let i = 0; i < a; i++)
-        {
-            arr[i] = x.split(' ')[i];
+            let y = document.getElementById("output");
+            let q = document.getElementById("out");
+            y.innerHTML = "Permutations: " + z.length;
+            q.innerHTML = text;
         }
-        
-        let z = perm(arr);
-
-        for(let i = 0; i < z.length; i++) {
-            for(let j = 0; j < z[j].length; j++) {
-                text += z[i][j] + " ";
-            }
-            text += "</br>";
-        }
-
-        let y = document.getElementById("output");
-        let q = document.getElementById("out");
-        y.innerHTML = "Permutations: " + z.length;
-        q.innerHTML = text;
-    }
-</script>
+    </script>
 </body>
+
 </html>
