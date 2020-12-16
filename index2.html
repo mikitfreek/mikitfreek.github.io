@@ -1,52 +1,175 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Comming Soon!</title>
 
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
 
     <style>
-        * {
-            color:#fbfbfbfb;
-            font-family: Georgia, serif;
+        body {
+            color: #fbfbfbfb;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
         }
+
+        a {
+            color: #fbfbfbfb;
+        }
+
+        a:hover {
+            color: #fff;
+        }
+
+        a:active {
+            color: #fbfbfbfb;
+        }
+
+        a:link {
+            color: #fbfbfbfb;
+        }
+
+        a:visited {
+            color: #fbfbfbfb;
+        }
+
         .main-bg {
-            height:100vh;
-            width:auto;
-            background: rgb(102,0,255);
-            background: linear-gradient(164deg, rgba(102,0,255,1) 35%, rgba(218,0,255,1) 100%);
+            height: 100vh;
+            width: auto;
+            background: rgb(102, 0, 255);
+            background: linear-gradient(164deg, rgba(102, 0, 255, 1) 35%, rgba(218, 0, 255, 1) 100%);
         }
-        .main{
+
+        .logo a {
+            color: #fbfbfbfb;
+            text-decoration: none;
+            opacity: 0.8;
+        }
+
+        .logo {
             position: absolute;
-            font-family: Georgia, serif;
-            top: calc(50% - 84px);
-            left: calc(50% - 300px);
+            font-size: 32px;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            top: 15%;
+            left: 50%;
+            margin-left: -45%;
+            width: 90%;
         }
-        h1{
+
+        .logo a:hover {
+            opacity: 1;
+            transition: opacity .3s ease-in-out;
+            -moz-transition: opacity .3s ease-in-out;
+            -webkit-transition: opacity .3s ease-in-out;
+            -o-transition: opacity .3s ease-in-out;
+        }
+
+        .main {
+            position: absolute;
+            font-family: Georgia, 'Times New Roman', Times, serif;
+            top: 25%;
+            left: 50%;
+            margin-left: -45%;
+            width: 90%;
+        }
+
+        @media only screen and (min-width: 800px) {
+            .logo {
+                margin-left: -25%;
+                width: 50%;
+            }
+
+            .main {
+                top: 35%;
+                margin-left: -25%;
+                width: 50%;
+            }
+        }
+
+        @media only screen and (min-width: 1700px) {
+            .logo {
+                margin-left: -18%;
+                width: 36%;
+            }
+
+            .main {
+                margin-left: -18%;
+                width: 36%;
+            }
+        }
+
+        h1 {
             font-size: 72px;
         }
-        .btn-check{
+
+        .btn-check {
             font-size: 28px;
-            font-family: monospace;
-            font-weight: 100;
-            color:#fbfbfb;
+            font-family: monospace, Verdana, 'Courier New', Courier;
+            font-weight: 200;
+            color: #fbfbfbe0;
             border: 1px solid #fff;
             border-radius: 36px;
-            padding: 0 30px;
+            padding: 0 24px;
         }
-        .btn-check:hover{
-            color:#d1d;
+
+        .btn-check:hover {
+            color: #fff;
             border-color: #d1d;
         }
-        </style>
+
+        .drop a {
+            color: #fbfbfbfb;
+            text-decoration: none;
+        }
+
+        .drop-toggle {margin-bottom:0}
+
+        .drop .drop-menu {
+            opacity: 1;
+
+        }
+
+        .drop .drop-item {
+            display: block;
+            font-size: 28px;
+            font-family: Tahoma, Verdana, Geneva, sans-serif;
+            font-weight: 100;
+            padding: .25rem 1.5rem;
+            opacity: 0.9;
+        }
+        .drop .drop-item:hover { opacity: 1}
+    </style>
 </head>
+
 <body>
     <div class="main-bg"></div>
+    <header class="logo"><a href="https://www.fiverr.com/mikitfreek">@mikitfreek</a></header>
     <div class="main">
-        <h1>COMMING SOON</h1>
-        <a href="https://www.fiverr.com/mikitfreek"><button type="button" class="btn btn-check">Check My Fiverr!</button></a>
+        <br>
+        <div class="drop">
+            <a class="drop-toggle" href="#" role="button" id="drop">
+                <h1>PORTFOLIO</h1>
+            </a>
+
+            <div class="drop-menu">
+                <a class="drop-item" href="#">Action</a>
+                <a class="drop-item" href="#">Another action</a>
+                <a class="drop-item" href="#">Something else here</a>
+            </div>
+        </div>
+        <br>
+        <a href="https://www.fiverr.com/mikitfreek">
+            <button type="button" class="btn btn-check">
+                Check My Fiverr!</button></a>
     </div>
+
+    <!-- JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"
+        integrity="sha384-LtrjvnR4Twt/qOuYxE721u19sVFLVSA4hf/rRt6PrZTmiPltdZcI7q7PXQBYTKyf"
+        crossorigin="anonymous"></script>
+
 </body>
+
 </html>
