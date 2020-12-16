@@ -1,5 +1,5 @@
-var basicScene;
-var BasicScene = Class.extend({
+var virtualScene;
+var VirtualScene = Class.extend({
     // Class constructor
     init: function () {
         'use strict';
@@ -12,7 +12,7 @@ var BasicScene = Class.extend({
         this.scene.add(this.light);
         this.renderer = new THREE.WebGLRenderer();
         // Define the container for the renderer
-        this.container = jQuery('#basic-scene');
+        this.container = jQuery('#game');
         // Create the user's character
         this.user = new Character({
             color: 0x7A43B6
@@ -105,7 +105,7 @@ var BasicScene = Class.extend({
         // On resize
         jQuery(window).resize(function () {
             // Redefine the size of the renderer
-            basicScene.setAspect();
+            virtualScene.setAspect();
         });
     },
     // Defining the renderer's size
@@ -114,7 +114,7 @@ var BasicScene = Class.extend({
         // Fit the container's full width
         var w = this.container.width(),
             // Fit the initial visible area's height
-            h = jQuery(window).height() - this.container.offset().top - 20;
+            h = jQuery(window).height() - this.container.offset().top; // - 20
         // Update the renderer and the camera
         this.renderer.setSize(w, h);
         this.camera.aspect = w / h;
@@ -123,7 +123,8 @@ var BasicScene = Class.extend({
     // Updating the camera to follow and look at a given Object3D / Mesh
     setFocus: function (object) {
         'use strict';
-        this.camera.position.set(object.position.x, object.position.y + 128, object.position.z - 256);
+        //this.camera.position.set(object.position.x, object.position.y + 128, object.position.z - 256);
+        this.camera.position.set(object.position.x + 128, object.position.y + 256, object.position.z - 256);
         this.camera.lookAt(object.position);
     },
     // Update and draw the scene
@@ -137,6 +138,7 @@ var BasicScene = Class.extend({
         this.renderer.render(this.scene, this.camera);
     }
 });
+
 var World = Class.extend({
     // Class constructor
     init: function (args) {
@@ -185,15 +187,18 @@ var World = Class.extend({
         this.obstacles[0].position.set(0, 32, 128);
     }
 });
+
 var Character = Class.extend({
     // Class constructor
     init: function (args) {
         'use strict';
         // Set the different geometries composing the humanoid
-        var head = new THREE.SphereGeometry(32, 8, 8),
-            hand = new THREE.SphereGeometry(8, 4, 4),
-            foot = new THREE.SphereGeometry(16, 4, 4, 0, Math.PI * 2, 0, Math.PI / 2),
-            nose = new THREE.SphereGeometry(4, 4, 4),
+        var head = new THREE.BoxGeometry(10, 10, 10),
+            neck = new THREE.BoxGeometry(5, 5, 5),
+            body = new THREE.BoxGeometry(14, 18, 6),
+            hand = new THREE.BoxGeometry(4, 20, 4),
+            foot = new THREE.BoxGeometry(6, 22, 6),
+            nose = new THREE.SphereGeometry(1, 2, 1),
             // Set the material, the "skin"
             material = new THREE.MeshLambertMaterial(args);
         // Set the character modelisation object
@@ -203,15 +208,23 @@ var Character = Class.extend({
         this.head = new THREE.Mesh(head, material);
         this.head.position.y = 0;
         this.mesh.add(this.head);
+        // Set and add its neck
+        this.neck = new THREE.Mesh(neck, material);
+        this.neck.position.y = -7;
+        this.mesh.add(this.neck);
+        // Set and add its body 
+        this.body = new THREE.Mesh(body, material);
+        this.body.position.y = -18;
+        this.mesh.add(this.body);
         // Set and add its hands
         this.hands = {
             left: new THREE.Mesh(hand, material),
             right: new THREE.Mesh(hand, material)
         };
-        this.hands.left.position.x = -40;
-        this.hands.left.position.y = -8;
-        this.hands.right.position.x = 40;
-        this.hands.right.position.y = -8;
+        this.hands.left.position.x = -9;
+        this.hands.left.position.y = -19;
+        this.hands.right.position.x = 9;
+        this.hands.right.position.y = -19;
         this.mesh.add(this.hands.left);
         this.mesh.add(this.hands.right);
         // Set and add its feet
@@ -219,18 +232,18 @@ var Character = Class.extend({
             left: new THREE.Mesh(foot, material),
             right: new THREE.Mesh(foot, material)
         };
-        this.feet.left.position.x = -20;
-        this.feet.left.position.y = -48;
-        this.feet.left.rotation.y = Math.PI / 4;
-        this.feet.right.position.x = 20;
-        this.feet.right.position.y = -48;
-        this.feet.right.rotation.y = Math.PI / 4;
+        this.feet.left.position.x = -4;
+        this.feet.left.position.y = -35;
+        //this.feet.left.rotation.x = Math.PI / 4;
+        this.feet.right.position.x = 4;
+        this.feet.right.position.y = -35;
+        //this.feet.right.rotation.y = Math.PI / 4;
         this.mesh.add(this.feet.left);
         this.mesh.add(this.feet.right);
         // Set and add its nose
         this.nose = new THREE.Mesh(nose, material);
         this.nose.position.y = 0;
-        this.nose.position.z = 32;
+        this.nose.position.z = 5;
         this.mesh.add(this.nose);
         // Set the vector of the current motion
         this.direction = new THREE.Vector3(0, 0, 0);
@@ -294,10 +307,10 @@ var Character = Class.extend({
         // Now let's use Sine and Cosine curves, using our "step" property ...
         this.step += 1 / 4;
         // ... to slightly move our feet and hands
-        this.feet.left.position.setZ(Math.sin(this.step) * 16);
-        this.feet.right.position.setZ(Math.cos(this.step + (Math.PI / 2)) * 16);
-        this.hands.left.position.setZ(Math.cos(this.step + (Math.PI / 2)) * 8);
-        this.hands.right.position.setZ(Math.sin(this.step) * 8);
+        this.feet.left.position.setZ(Math.sin(this.step) * 4);
+        this.feet.right.position.setZ(Math.cos(this.step + (Math.PI / 2)) * 4);
+        this.hands.left.position.setZ(Math.cos(this.step + (Math.PI / 2)) * 4);
+        this.hands.right.position.setZ(Math.sin(this.step) * 4);
     },
     collide: function () {
         'use strict';
@@ -305,9 +318,10 @@ var Character = Class.extend({
         return false;
     }
 });
-basicScene = new BasicScene();
+
+virtualScene = new VirtualScene();
 function animate () {
     requestAnimationFrame(animate);
-    basicScene.frame();
+    virtualScene.frame();
 }
 animate();

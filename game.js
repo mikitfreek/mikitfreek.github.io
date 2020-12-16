@@ -24,11 +24,12 @@ camera.rotation.x = Math.atan( - 1 / Math.sqrt( 2 ) );
 let posX = 0, posZ = 3, posY = 0;
 
 controls = new THREE.OrbitControls( camera, renderer.domElement );
-controls.addEventListener( 'change', animate );
+//controls.addEventListener( 'change', animate );
 controls.enableRotate = false;
 controls.enableZoom = true;
 controls.enablePan = true;
 controls.maxPolarAngle = Math.PI / 2;
+
 
 // Objects
 
