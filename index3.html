@@ -17,7 +17,8 @@ body{margin:0}
     height: 100%;
     width: 100vw;
     background: rgb(23, 14, 32);
-    background: linear-gradient(164deg, rgb(68, 0, 80) 5%, rgb(23, 14, 32) 80%);
+    background: linear-gradient(164deg, rgb(81, 0, 95) 10%, rgb(23, 14, 32) 80%);
+    z-index:-1;
 }
 .main {
     position: absolute;
@@ -28,6 +29,7 @@ body{margin:0}
 
 </head>
 <body>
+    <div class="main-bg"></div>
     <!-- JS -->
     <script src="https://threejs.org/build/three.min.js"></script>
     <script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
