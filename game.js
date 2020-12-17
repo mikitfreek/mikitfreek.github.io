@@ -147,13 +147,13 @@ var World = Class.extend({
         var ground = new THREE.PlaneGeometry(512, 1024),
             height = 128,
             walls = [
-                    new THREE.PlaneGeometry(ground.height, height),
-                    new THREE.PlaneGeometry(ground.width, height),
-                    new THREE.PlaneGeometry(ground.height, height),
-                    new THREE.PlaneGeometry(ground.width, height)
+                new THREE.PlaneGeometry(ground.height, height),
+                new THREE.PlaneGeometry(ground.width, height),
+                new THREE.PlaneGeometry(ground.height, height),
+                new THREE.PlaneGeometry(ground.width, height)
             ],
             obstacles = [
-                    new THREE.CubeGeometry(64, 64, 64)
+                new THREE.CubeGeometry(64, 64, 64)
             ],
             // Set the material, the "skin"
             material = new THREE.MeshNormalMaterial(args),
@@ -161,13 +161,13 @@ var World = Class.extend({
         // Set the "world" modelisation object
         this.mesh = new THREE.Object3D();
         // Grid
-        this.geometryGrid = new THREE.PlaneBufferGeometry( 1000, 1000, 100, 100 );
-        this.materialGrid = new THREE.MeshBasicMaterial( { color: 0xFFFFFF, wireframe: true, opacity: 0.15, transparent: true } );
-        this.grid = new THREE.Mesh( this.geometryGrid, this.materialGrid );
+        this.geometryGrid = new THREE.PlaneBufferGeometry(1000, 1000, 100, 100);
+        this.materialGrid = new THREE.MeshBasicMaterial({ color: 0xFFFFFF, wireframe: true, opacity: 0.15, transparent: true });
+        this.grid = new THREE.Mesh(this.geometryGrid, this.materialGrid);
         this.grid.rotation.order = 'YXZ';
         this.grid.rotation.y = - Math.PI / 2;
         this.grid.rotation.x = - Math.PI / 2;
-        this.mesh.add( this.grid );
+        this.mesh.add(this.grid);
         // Set and add the ground
         this.ground = new THREE.Mesh(ground, material);
         this.ground.rotation.x = -Math.PI / 2;
@@ -193,6 +193,11 @@ var World = Class.extend({
             this.mesh.add(this.obstacles[i]);
         }
         this.obstacles[0].position.set(0, 32, 128);
+    },
+    // Set obstacles to interact with
+    getObstacles: function () {
+        'use strict';
+        return this.obstacles.concat(this.walls);
     }
 });
 
@@ -200,13 +205,14 @@ var Character = Class.extend({
     // Class constructor
     init: function (args) {
         'use strict';
+
         // Set the different geometries composing the humanoid
         var head = new THREE.BoxGeometry(10, 10, 10),
             neck = new THREE.BoxGeometry(5, 5, 5),
-            body = new THREE.BoxGeometry(14, 18, 6),
-            hand = new THREE.BoxGeometry(4, 20, 4),
-            foot = new THREE.BoxGeometry(6, 22, 6),
-            nose = new THREE.SphereGeometry(1, 2, 1),
+            body = new THREE.BoxGeometry(14, 16, 8),
+            hand = new THREE.BoxGeometry(3, 20, 3),
+            foot = new THREE.BoxGeometry(5, 20, 5),
+            nose = new THREE.SphereGeometry(1, 3, 1),
             // Set the material, the "skin"
             material = new THREE.MeshLambertMaterial(args);
         // Set the character modelisation object
@@ -214,25 +220,30 @@ var Character = Class.extend({
         this.mesh.position.y = 48;
         // Set and add its head
         this.head = new THREE.Mesh(head, material);
+        this.head.position.z = 1;
         this.head.position.y = 0;
         this.mesh.add(this.head);
         // Set and add its neck
         this.neck = new THREE.Mesh(neck, material);
         this.neck.position.y = -7;
+        this.neck.position.z = 0.5;
         this.mesh.add(this.neck);
         // Set and add its body 
         this.body = new THREE.Mesh(body, material);
-        this.body.position.y = -18;
+        this.body.position.y = -17;
+        this.body.position.z = -0.1;
         this.mesh.add(this.body);
         // Set and add its hands
         this.hands = {
             left: new THREE.Mesh(hand, material),
             right: new THREE.Mesh(hand, material)
         };
-        this.hands.left.position.x = -9;
+        this.hands.left.position.x = 9;
         this.hands.left.position.y = -19;
-        this.hands.right.position.x = 9;
+        this.hands.left.position.z = -2;
+        this.hands.right.position.x = -9;
         this.hands.right.position.y = -19;
+        this.hands.left.position.z = -2;
         this.mesh.add(this.hands.left);
         this.mesh.add(this.hands.right);
         // Set and add its feet
@@ -240,10 +251,10 @@ var Character = Class.extend({
             left: new THREE.Mesh(foot, material),
             right: new THREE.Mesh(foot, material)
         };
-        this.feet.left.position.x = -4;
+        this.feet.left.position.x = 4;
         this.feet.left.position.y = -35;
         //this.feet.left.rotation.x = Math.PI / 4;
-        this.feet.right.position.x = 4;
+        this.feet.right.position.x = -4;
         this.feet.right.position.y = -35;
         //this.feet.right.rotation.y = Math.PI / 4;
         this.mesh.add(this.feet.left);
@@ -251,12 +262,56 @@ var Character = Class.extend({
         // Set and add its nose
         this.nose = new THREE.Mesh(nose, material);
         this.nose.position.y = 0;
-        this.nose.position.z = 5;
+        this.nose.position.z = 6;
         this.mesh.add(this.nose);
+
         // Set the vector of the current motion
         this.direction = new THREE.Vector3(0, 0, 0);
         // Set the current animation step
         this.step = 0;
+        // Set the rays : one vector for every potential direction
+        this.rays = [
+            new THREE.Vector3(0, 0, 1),
+            new THREE.Vector3(1, 0, 1),
+            new THREE.Vector3(1, 0, 0),
+            new THREE.Vector3(1, 0, -1),
+            new THREE.Vector3(0, 0, -1),
+            new THREE.Vector3(-1, 0, -1),
+            new THREE.Vector3(-1, 0, 0),
+            new THREE.Vector3(-1, 0, 1)
+        ];
+        // And the "RayCaster", able to test for intersections
+        this.caster = new THREE.Raycaster();
+    },
+    // Test and avoid collisions
+    collision: function () {
+        'use strict';
+        var collisions, i,
+            // Maximum distance from the origin before we consider collision
+            distance = 12,
+            // Get the obstacles array from our world
+            obstacles = virtualScene.world.getObstacles();
+        // For each ray
+        for (i = 0; i < this.rays.length; i += 1) {
+            // We reset the raycaster to this direction
+            this.caster.set(this.mesh.position, this.rays[i]);
+            // Test if we intersect with any obstacle mesh
+            collisions = this.caster.intersectObjects(obstacles);
+            // And disable that direction if we do
+            if (collisions.length > 0 && collisions[0].distance <= distance) {
+                // Yep, this.rays[i] gives us : 0 => up, 1 => up-left, 2 => left, ...
+                if ((i === 0 || i === 1 || i === 7) && this.direction.z === 1) {
+                    this.direction.setZ(0);
+                } else if ((i === 3 || i === 4 || i === 5) && this.direction.z === -1) {
+                    this.direction.setZ(0);
+                }
+                if ((i === 1 || i === 2 || i === 3) && this.direction.x === 1) {
+                    this.direction.setX(0);
+                } else if ((i === 5 || i === 6 || i === 7) && this.direction.x === -1) {
+                    this.direction.setX(0);
+                }
+            }
+        }
     },
     // Update the direction of the current motion
     setDirection: function (controls) {
@@ -270,7 +325,17 @@ var Character = Class.extend({
     // Process the character motions
     motion: function () {
         'use strict';
-        // (if any)
+        // Update the directions if we intersect with an obstacle
+        this.collision();
+        // If we're not static
+        if (this.direction.x !== 0 || this.direction.z !== 0) {
+            // Rotate the character
+            this.rotate();
+            // Move the character
+            this.move();
+            return true;
+        }
+        /*/ (if any)
         if (this.direction.x !== 0 || this.direction.z !== 0) {
             // Rotate the character
             this.rotate();
@@ -281,7 +346,7 @@ var Character = Class.extend({
             // ... we move the character
             this.move();
             return true;
-        }
+        }*/ //old
     },
     // Rotate the character
     rotate: function () {
@@ -315,20 +380,24 @@ var Character = Class.extend({
         // Now let's use Sine and Cosine curves, using our "step" property ...
         this.step += 1 / 4;
         // ... to slightly move our feet and hands
-        this.feet.left.position.setZ(Math.sin(this.step) * 4);
-        this.feet.right.position.setZ(Math.cos(this.step + (Math.PI / 2)) * 4);
-        this.hands.left.position.setZ(Math.cos(this.step + (Math.PI / 2)) * 4);
-        this.hands.right.position.setZ(Math.sin(this.step) * 4);
+        this.feet.left.position.setZ(Math.sin(this.step - (Math.PI / 2)) * 2);
+        this.feet.right.position.setZ((Math.cos(this.step) * 2));
+        this.feet.left.rotation.x = Math.cos(this.step) / 4;//+ (Math.PI / 2)
+        this.feet.right.rotation.x = Math.sin(this.step - (Math.PI / 2)) / 4; //feet (Math.sin(this.step) + (Math.PI / 2)) / 4;
+        this.hands.left.position.setZ(Math.cos(this.step + (Math.PI / 2)) * 1);
+        this.hands.left.rotation.x = Math.cos(this.step) / 16;
+        this.hands.right.position.setZ(Math.sin(this.step) * 1);
+        this.hands.right.rotation.x = Math.cos(this.step) / 16;
     },
-    collide: function () {
+    /*collide: function () {
         'use strict';
         // INSERT SOME MAGIC HERE
         return false;
-    }
+    }*/
 });
 
 virtualScene = new VirtualScene();
-function animate () {
+function animate() {
     requestAnimationFrame(animate);
     virtualScene.frame();
 }
