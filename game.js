@@ -388,6 +388,7 @@ var Character = Class.extend({
         this.hands.left.rotation.x = Math.cos(this.step) / 16;
         this.hands.right.position.setZ(Math.sin(this.step) * 1);
         this.hands.right.rotation.x = Math.cos(this.step) / 16;
+        this.head.rotation.z = Math.cos(this.step) / 32;
     },
     /*collide: function () {
         'use strict';
