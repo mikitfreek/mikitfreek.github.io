@@ -5,7 +5,7 @@ var VirtualScene = Class.extend({
         'use strict';
         // Create a scene, a camera, a light and a WebGL renderer with Three.JS
         this.scene = new THREE.Scene();
-        this.camera = new THREE.PerspectiveCamera(45, 1, 0.1, 10000);
+        this.camera = new THREE.PerspectiveCamera(44, 1, 0.1, 10000);
         this.scene.add(this.camera);
         this.light = new THREE.PointLight();
         this.light.position.set(-256, 256, -256);
@@ -123,8 +123,10 @@ var VirtualScene = Class.extend({
     // Updating the camera to follow and look at a given Object3D / Mesh
     setFocus: function (object) {
         'use strict';
+        this.zoomFocus = 256;
+        this.degFocus = this.zoomFocus / 2;
         //this.camera.position.set(object.position.x, object.position.y + 128, object.position.z - 256);
-        this.camera.position.set(object.position.x + 128, object.position.y + 256, object.position.z - 256);
+        this.camera.position.set(object.position.x + this.degFocus, object.position.y + this.zoomFocus, object.position.z - this.zoomFocus);
         this.camera.lookAt(object.position);
     },
     // Update and draw the scene
@@ -144,7 +146,7 @@ var World = Class.extend({
     init: function (args) {
         'use strict';
         // Set the different geometries composing the room
-        var ground = new THREE.PlaneGeometry(512, 1024),
+        var ground = new THREE.PlaneGeometry(512, 512),
             height = 128,
             walls = [
                 new THREE.PlaneGeometry(ground.height, height),
@@ -153,11 +155,18 @@ var World = Class.extend({
                 new THREE.PlaneGeometry(ground.width, height)
             ],
             obstacles = [
-                new THREE.CubeGeometry(64, 64, 64)
+                new THREE.BoxGeometry(64, 64, 64)
             ],
+            inWall = new THREE.BoxGeometry( 64, 64, 12),
+            inWalls = [],
             // Set the material, the "skin"
             material = new THREE.MeshNormalMaterial(args),
             i;
+        //walls
+        inWalls.length = 20;
+        for (i = 0; i < inWalls.length; i += 1) {
+            obstacles.push(inWall);
+        }
         // Set the "world" modelisation object
         this.mesh = new THREE.Object3D();
         // Grid
@@ -193,6 +202,17 @@ var World = Class.extend({
             this.mesh.add(this.obstacles[i]);
         }
         this.obstacles[0].position.set(0, 32, 128);
+        //this.obstacles[1].position.set(0, 32, 256);
+        //this.obstacles[2].position.set(64, 32, 256);
+        // cd walls
+        for (i = 0; i < inWalls.length; i += 1) {
+            if(i<7)             this.obstacles[i+1].position.set( -(256 - (64 * (i + 1))), 32, 256 );
+            if(i<16 && i>=7) {   this.obstacles[i+1].position.set( 256, 32, - (1.5*512 - (64 * (i + 1))) ); 
+                                this.obstacles[i+1].rotation.y = -Math.PI / 2; }
+            if(i<19 && i>=15)    this.obstacles[i+1].position.set( -(256 - (64 * (i + 1))), 32, -256);
+            if(i<23 && i>=19){   this.obstacles[i+1].position.set( -256, 32, - ( - (64 * (i + 1))) ); 
+                                this.obstacles[i+1].rotation.y = -Math.PI / 2; }
+        }
     },
     // Set obstacles to interact with
     getObstacles: function () {
@@ -288,7 +308,7 @@ var Character = Class.extend({
         'use strict';
         var collisions, i,
             // Maximum distance from the origin before we consider collision
-            distance = 12,
+            distance = 24,
             // Get the obstacles array from our world
             obstacles = virtualScene.world.getObstacles();
         // For each ray
@@ -320,6 +340,9 @@ var Character = Class.extend({
         var x = controls.left ? 1 : controls.right ? -1 : 0,
             y = 0,
             z = controls.up ? 1 : controls.down ? -1 : 0;
+        // fix for camera rotate position
+        x += controls.up ? -0.5 : controls.down ? 0.5 : 0;
+        z += controls.left ? 0.5 : controls.right ? -0.5 : 0;
         this.direction.set(x, y, z);
     },
     // Process the character motions
@@ -375,20 +398,26 @@ var Character = Class.extend({
     move: function () {
         'use strict';
         // We update our Object3D's position from our "direction"
-        this.mesh.position.x += this.direction.x * ((this.direction.z === 0) ? 4 : Math.sqrt(8));
-        this.mesh.position.z += this.direction.z * ((this.direction.x === 0) ? 4 : Math.sqrt(8));
+        this.mesh.position.x += this.direction.x * ((this.direction.z === 0) ? 4 : Math.sqrt(2));
+        this.mesh.position.z += this.direction.z * ((this.direction.x === 0) ? 4 : Math.sqrt(2));
         // Now let's use Sine and Cosine curves, using our "step" property ...
         this.step += 1 / 4;
-        // ... to slightly move our feet and hands
+        // ... to slightly move our feet
         this.feet.left.position.setZ(Math.sin(this.step - (Math.PI / 2)) * 2);
         this.feet.right.position.setZ((Math.cos(this.step) * 2));
         this.feet.left.rotation.x = Math.cos(this.step) / 4;//+ (Math.PI / 2)
         this.feet.right.rotation.x = Math.sin(this.step - (Math.PI / 2)) / 4; //feet (Math.sin(this.step) + (Math.PI / 2)) / 4;
-        this.hands.left.position.setZ(Math.cos(this.step + (Math.PI / 2)) * 1);
+        //hands
+        this.hands.left.position.setZ(Math.cos(this.step + (Math.PI)) * 1);
+        this.hands.right.position.setZ(Math.sin(this.step + (Math.PI / 2)) * 1);
         this.hands.left.rotation.x = Math.cos(this.step) / 16;
-        this.hands.right.position.setZ(Math.sin(this.step) * 1);
-        this.hands.right.rotation.x = Math.cos(this.step) / 16;
-        this.head.rotation.z = Math.cos(this.step) / 32;
+        this.hands.right.rotation.x = Math.sin(this.step - (Math.PI / 2)) / 16;
+        this.hands.left.rotation.z = Math.cos(this.step) / 42;
+        this.hands.right.rotation.z = Math.cos(this.step) / 36;
+        //head
+        this.head.rotation.z = Math.cos(this.step - (Math.PI / 2)) / 64;
+        //body
+        this.body.rotation.z = Math.cos(this.step) / 42;
     },
     /*collide: function () {
         'use strict';
