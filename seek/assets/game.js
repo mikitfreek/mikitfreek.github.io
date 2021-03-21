@@ -18,11 +18,20 @@ var VirtualScene = Class.extend({
             color: 0x7A43B6
         });
         this.scene.add(this.user.mesh);
+        this.gltfLoader = new THREE.GLTFLoader();
+        this.url = 'assets/models/Coliseum/Coliseum.gltf';
+            this.gltfLoader.load(this.url, (gltf) => {
+            this.obj = gltf.scene;
+            this.obj.scale.set(1.2,1.2,1.2);
+            this.obj.position.y = -75;
+            this.scene.add(this.obj);
+        });
         // Create the "world" : a 3D representation of the place we'll be putting our character in
         this.world = new World({
             // color: 0xF5F5F5
         });
         this.scene.add(this.world.mesh);
+        //this.degFocus;
         // Define the size of the renderer
         this.setAspect();
         // Insert the renderer in the container
@@ -123,11 +132,16 @@ var VirtualScene = Class.extend({
     // Updating the camera to follow and look at a given Object3D / Mesh
     setFocus: function (object) {
         'use strict';
-        this.zoomFocus = 256;
-        this.degFocus = this.zoomFocus / 2;
+        this.zoomFocus = 256*2;
+        this.degFocus = 128;
         //this.camera.position.set(object.position.x, object.position.y + 128, object.position.z - 256);
         this.camera.position.set(object.position.x + this.degFocus, object.position.y + this.zoomFocus, object.position.z - this.zoomFocus);
         this.camera.lookAt(object.position);
+    },
+    // Set obstacles to interact with
+    getFocus: function () {
+        'use strict';
+        return this.degFocus;
     },
     // Update and draw the scene
     frame: function () {
@@ -163,7 +177,7 @@ var World = Class.extend({
             material = new THREE.MeshNormalMaterial(args),
             i;
         //walls
-        inWalls.length = 20;
+        inWalls.length = 32;
         for (i = 0; i < inWalls.length; i += 1) {
             obstacles.push(inWall);
         }
@@ -181,6 +195,35 @@ var World = Class.extend({
         this.ground = new THREE.Mesh(ground, material);
         this.ground.rotation.x = -Math.PI / 2;
         this.mesh.add(this.ground);
+        // car
+        /*this.car = new THREE.GLTFLoader();
+        this.car.load(
+            'models/monkey.glb',
+            function (gltf) {
+                // gltf.scene.traverse(function (child) {
+                //     if ((<THREE.Mesh>child).isMesh) {
+                //         let m = <THREE.Mesh>child
+                //         m.receiveShadow = true
+                //         m.castShadow = true
+                //     }
+                //     if ((<THREE.Light>child).isLight) {
+                //         let l = <THREE.Light>child
+                //         l.castShadow = true
+                //         //l.shadow.bias = -.003
+                //         l.shadow.mapSize.width = 2048
+                //         l.shadow.mapSize.height = 2048
+                //     }
+                // })
+                scene.add(gltf.scene);
+            },
+            (xhr) => {
+                console.log((xhr.loaded / xhr.total * 100) + '% loaded')
+            },
+            (error) => {
+                console.log(error);
+            }
+        );*/
+        //this.car.scale.set(0.5,0.5,0.5);
         // Set and add the walls
         this.walls = [];
         for (i = 0; i < walls.length; i += 1) {
@@ -205,13 +248,13 @@ var World = Class.extend({
         //this.obstacles[1].position.set(0, 32, 256);
         //this.obstacles[2].position.set(64, 32, 256);
         // cd walls
-        for (i = 0; i < inWalls.length; i += 1) {
-            if(i<7)             this.obstacles[i+1].position.set( -(256 - (64 * (i + 1))), 32, 256 );
-            if(i<16 && i>=7) {   this.obstacles[i+1].position.set( 256, 32, - (1.5*512 - (64 * (i + 1))) ); 
-                                this.obstacles[i+1].rotation.y = -Math.PI / 2; }
-            if(i<19 && i>=15)    this.obstacles[i+1].position.set( -(256 - (64 * (i + 1))), 32, -256);
-            if(i<23 && i>=19){   this.obstacles[i+1].position.set( -256, 32, - ( - (64 * (i + 1))) ); 
-                                this.obstacles[i+1].rotation.y = -Math.PI / 2; }
+        for (i = 0; i <= inWalls.length; i += 1) {
+            if(i<8)           this.obstacles[i+1].position.set( -(224 - (64 * i )), 32, 256 );
+            if(i<16 && i>=8){ this.obstacles[i+1].position.set( 256, 32, (224 - (64 * (i - 8))) ); 
+                              this.obstacles[i+1].rotation.y = -Math.PI / 2; }
+            if(i<24 && i>=16) this.obstacles[i+1].position.set( (224 - (64 * (i - 16))), 32, -256);
+            if(i<32 && i>=24){this.obstacles[i+1].position.set( -256, 32, - (224 - (64 * (i - 24))) ); 
+                              this.obstacles[i+1].rotation.y = Math.PI / 2; }
         }
     },
     // Set obstacles to interact with
@@ -312,6 +355,7 @@ var Character = Class.extend({
             // Get the obstacles array from our world
             obstacles = virtualScene.world.getObstacles();
         // For each ray
+        //edit
         for (i = 0; i < this.rays.length; i += 1) {
             // We reset the raycaster to this direction
             this.caster.set(this.mesh.position, this.rays[i]);
@@ -332,6 +376,29 @@ var Character = Class.extend({
                 }
             }
         }
+        //endEdit
+        /*
+        for (i = 0; i < this.rays.length; i += 1) {
+            // We reset the raycaster to this direction
+            this.caster.set(this.mesh.position, this.rays[i]);
+            // Test if we intersect with any obstacle mesh
+            collisions = this.caster.intersectObjects(obstacles);
+            // And disable that direction if we do
+            if (collisions.length > 0 && collisions[0].distance <= distance) {
+                // Yep, this.rays[i] gives us : 0 => up, 1 => up-left, 2 => left, ...
+                if ((i === 0 || i === 1 || i === 7) && this.direction.z === 1) {
+                    this.direction.setZ(0);
+                } else if ((i === 3 || i === 4 || i === 5) && this.direction.z === -1) {
+                    this.direction.setZ(0);
+                }
+                if ((i === 1 || i === 2 || i === 3) && this.direction.x === 1) {
+                    this.direction.setX(0);
+                } else if ((i === 5 || i === 6 || i === 7) && this.direction.x === -1) {
+                    this.direction.setX(0);
+                }
+            }
+        }
+        */
     },
     // Update the direction of the current motion
     setDirection: function (controls) {
@@ -341,8 +408,10 @@ var Character = Class.extend({
             y = 0,
             z = controls.up ? 1 : controls.down ? -1 : 0;
         // fix for camera rotate position
-        x += controls.up ? -0.5 : controls.down ? 0.5 : 0;
-        z += controls.left ? 0.5 : controls.right ? -0.5 : 0;
+        let deg = virtualScene.getFocus() / 256;
+        //console.log(virtualScene.getFocus());
+        //x += controls.up ? -deg : controls.down ? deg : 0;
+        //z += controls.left ? deg : controls.right ? -deg : 0;
         this.direction.set(x, y, z);
     },
     // Process the character motions
