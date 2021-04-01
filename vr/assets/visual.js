@@ -179,7 +179,7 @@ let Figure = Class.extend({
             windowX = jQuery(window).height() - this.container.offset().top,
             windowY = this.container.width(),
             // Set the different geometries
-            geom = new THREE.ConvexGeometry(), // .Geometry() is outdated
+            geom = new THREE.Geometry(), // .Geometry() is outdated
             material2 = new THREE.MeshBasicMaterial(args), //LambertMaterial
             // Calc grid values
             gridX = Math.ceil(windowX / gridSize),

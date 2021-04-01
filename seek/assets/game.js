@@ -58,16 +58,16 @@ var VirtualScene = Class.extend({
             var prevent = true;
             // Update the state of the attached control to "true"
             switch (e.keyCode) {
-                case 37:
+                case 65: //37
                     controls.left = true;
                     break;
-                case 38:
+                case 87: //38
                     controls.up = true;
                     break;
-                case 39:
+                case 68: //39
                     controls.right = true;
                     break;
-                case 40:
+                case 83: //40
                     controls.down = true;
                     break;
                 default:
@@ -87,16 +87,16 @@ var VirtualScene = Class.extend({
             var prevent = true;
             // Update the state of the attached control to "false"
             switch (e.keyCode) {
-                case 37:
+                case 65:
                     controls.left = false;
                     break;
-                case 38:
+                case 87:
                     controls.up = false;
                     break;
-                case 39:
+                case 68:
                     controls.right = false;
                     break;
-                case 40:
+                case 83:
                     controls.down = false;
                     break;
                 default:
