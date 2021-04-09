@@ -81,7 +81,7 @@ var VirtualScene = Class.extend({
                 flowX: 0.3,
                 flowY: 0.3
             };
-            const waterGeometry = new THREE.PlaneGeometry( 15000, 15000 );
+            const waterGeometry = new THREE.PlaneGeometry( 9000, 9000 );
             this.water = new Water( waterGeometry, {
                 color: params.color,
                 scale: params.scale,
@@ -245,7 +245,7 @@ var World = Class.extend({
     init: function (args) {
         'use strict';
         // Set the different geometries composing the room
-        var ground = new THREE.PlaneGeometry(15000, 15000),
+        var ground = new THREE.PlaneGeometry(9000, 9000),
             height = 128,
             walls = [
                 new THREE.PlaneGeometry(ground.height, height),
@@ -281,7 +281,7 @@ var World = Class.extend({
         });
         
         // Grid
-        // this.geometryGrid = new THREE.PlaneBufferGeometry(15000, 15000, 1000, 1000);
+        // this.geometryGrid = new THREE.PlaneBufferGeometry(9000, 9000, 1000, 1000);
         // this.materialGrid = new THREE.MeshPhongMaterial({ color: 0xFFFFFF, wireframe: true, wireframeLinewidth: "30", opacity: 0.12, transparent: true });
         // this.grid = new THREE.Mesh(this.geometryGrid, this.materialGrid);
         // this.grid.rotation.order = 'YXZ';
