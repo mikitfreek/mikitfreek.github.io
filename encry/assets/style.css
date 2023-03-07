@@ -1,0 +1,102 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+:root {
+  --color0: #ca7632;
+  --color1: rgb(230, 228, 225);
+  --color2: rgb(116, 104, 80);
+  --input-border: #8b8a8b;
+  --input-focus-h: 245;
+  --input-focus-s: 100%;
+  --input-focus-l: 42%;
+}
+
+@font-face {
+  font-family: BlackHanSans;
+  src: url('assets/BlackHanSans-Regular.ttf');
+}
+
+html,
+body {
+  /* overflow: hidden; */
+  margin: 0;
+  padding: 0;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  color: var(--color0);
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.004);
+  text-rendering: optimizeLegibility !important;
+  -webkit-font-smoothing: antialiased !important;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+section.UI {
+  /* position: absolute;
+  width: 100%; */
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  /* justify-content: space-between; */
+}
+
+section.UI div {
+  margin-bottom: 1rem;
+}
+
+section.UI .two-rows {
+  display: flex;
+  flex-direction: column;
+}
+
+section.UI .two-rows label {
+  padding-bottom: .4rem;
+}
+
+.result img {
+  max-width:100%;
+}
+
+.input {
+  font-size: 16px;
+  font-size: max(16px, 1em);
+  font-family: inherit;
+  padding: 0.25em 0.5em;
+  background-color: #fff;
+  border: 1px solid var(--input-border);
+  border-radius: 9px;
+}
+
+.input:not(textarea) {
+  line-height: 1;
+  height: 2.25rem;
+}
+
+input[type="file"] {
+  font-size: 0.9em;
+  padding-top: 0.35rem;
+}
+
+/* https://moderncss.dev/custom-css-styles-for-form-inputs-and-textareas/ */
+.input[readonly] {
+  border-style: dotted;
+  cursor: not-allowed;
+  color: #777;
+}
+
+textarea.input {
+  resize: vertical;
+}
+
+.input:focus {
+  border-color: hsl(var(--input-focus-h), var(--input-focus-s), var(--input-focus-l));
+  box-shadow: 0 0 0 3px hsla(var(--input-focus-h), var(--input-focus-s), calc(var(--input-focus-l) +
+          40%), 0.8);
+  transition: 180ms box-shadow ease-in-out;
+  /* Windows High Contrast mode */
+  outline: 3px solid transparent;
+}
