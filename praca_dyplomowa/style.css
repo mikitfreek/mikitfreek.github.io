@@ -300,3 +300,13 @@ canvas {
   background-color: black;
   padding: .43em .66em;
 }
+
+.menu-btn > div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.menu-btn .menu-title {
+  font-size: .5em;
+}
